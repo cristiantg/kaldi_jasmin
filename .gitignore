@@ -1,11 +1,13 @@
 steps
 utils
 data
+data-fmllr-*
 exp
 mfcc*
 nohup.out
 _runs*
 lexiconator
+raw_data
 data_preparation
 data_preparation_kaldi/local_*
 data_preparation_kaldi/raw_data

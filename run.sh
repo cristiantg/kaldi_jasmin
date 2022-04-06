@@ -18,18 +18,18 @@ echo
 ln -sf $KALDI_ROOT/egs/wsj/s5/utils/ utils
 ln -sf $KALDI_ROOT/egs/wsj/s5/steps/ steps
 
-# Make sure this path is correct:
-root_project=$KALDI_ROOT/egs/kaldi_jasmin
-
-
 
 ###############################################
 ###############################################
 # 0-Step1 COMMON-PARAMETERS
+# Make sure this path is correct:
+root_project=$KALDI_ROOT/egs/kaldi_jasmin
 dodataselprep=true
 dotrain=true
 dodecode=true
 stage=0
+doDNN=false #only if you have GPUs
+
 ngram=4
 ngram_test=4
 data_prep=$root_project/data_preparation_kaldi
@@ -46,7 +46,7 @@ input_dict_file="$lexi_project/input/wordlist"
 test_input_dict_file=$input_dict_file
 USER=$2 #CLAM-USERNAME
 PASSWORD=$3 #CLAM-PASSWORD
-#
+# Deafult values, please customize them according to the train data size:
 numLeavesTri1=450 ####225  #  450 # 900 #2500
 numGaussTri1=2500 ####1250  #  2500 # 5000 #15000
 numLeavesMLLT=450 ####225  #  450 # 900 #2500
@@ -359,7 +359,6 @@ if [ $stage -le 2 ]; then
 fi
 
 
-
 echo
 echo "---- Decode beam parameters ---"
 echo $(date)
@@ -388,9 +387,6 @@ if [ $stage -le 3 ]; then
 	fi
 fi
 
-
-###echo "Forced exit - Featrue extraction, delete first all source data :)"
-###exit 1
 
 if [ $stage -le 4 ]; then
 	echo ============================================================================
@@ -661,30 +657,42 @@ if [ $stage -le 10 ]; then
 	fi
 fi
 
-# Not good results at all
-#if [ $stage -le 11 ]; then
-#echo ============================================================================
-#echo "                  11. System Combination (DNN+SGMM)                       "
-#echo ============================================================================
-#	echo $(date)
-#	for iter in 1 2 3 4; do
-#		#local/score_combine.sh --cmd "$decode_cmd" \
-#		#data/dev "$data_langtest"_bg exp/tri4_nnet/decode_dev \
-#		#exp/sgmm2_4_mmi_b0.1/decode_dev_it$iter exp/combine_2/decode_dev_it$iter
-#
-#		local/score_combine.sh --cmd "$decode_cmd" \
-#		data/test "$data_langtest" exp/tri4_nnet/decode_test \
-#		exp/sgmm2_4_mmi_b0.1/decode_test_it$iter exp/combine_2/decode_test_it$iter
-#
-#		# WER
-#		echo ""
-#		echo `cat exp/combine_2/decode_test_it$iter/wer_* | grep WER | sort` 
-#	done
-#fi
+# Skip, it just takes scores:
+# if [ $stage -le 11 ]; then
+# echo ============================================================================
+# echo "                  11. System Combination (DNN+SGMM)                       "
+# echo ============================================================================
+# 	echo $(date)
+# 	for iter in 1 2 3 4; do
+# 		#local/score_combine.sh --cmd "$decode_cmd" \
+# 		#data/dev "$data_langtest"_bg exp/tri4_nnet/decode_dev \
+# 		#exp/sgmm2_4_mmi_b0.1/decode_dev_it$iter exp/combine_2/decode_dev_it$iter
+# 
+# 		now=exp/combine_2/decode_test_it$iter
+# 		rm -rf $now
+# 		[ ! -d $now ] && mkdir -p $now
+# 
+# 		local/score_combine.sh --cmd "$decode_cmd" \
+# 		data/test "$data_langtest" exp/tri4_nnet/decode_test \
+# 		exp/sgmm2_4_mmi_b0.1/decode_test_it$iter $now
+# 
+# 		# WER
+# 		echo ""
+# 		echo `cat $now/wer_* | grep WER | sort` 
+# 	done
+# fi
 
+echo "train_cmd: $train_cmd"
 echo "======== Finished ========"
 echo $(date)
 
+if $doDNN; then
+	echo ============================================================================
+	echo "               DNN Hybrid Training & Decoding (Karel's recipe)            "
+	echo ============================================================================
+	utils/fix_data_dir.sh data/train
+	local/nnet/run_dnn.sh
+fi
 
 if $dodecode; then
 	for x in exp/*/decode*; do [ -d $x ] && grep WER $x/wer_* | utils/best_wer.sh; done | sort -n > exp/best_wer.txt
