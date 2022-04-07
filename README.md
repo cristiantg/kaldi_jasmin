@@ -50,17 +50,20 @@ tail -f nohup.out
 **C. WER RESULTS (com-p and com-q G1: train:JASMIN-132 vs. test:JASMIN-10)**
 
 ```
-%WER 4.47 [ 189 / 4228, 42 ins, 58 del, 89 sub ] exp/sgmm2_4/decode_test/wer_18_0.0
-%WER 4.61 [ 195 / 4228, 40 ins, 63 del, 92 sub ] exp/sgmm2_4_mmi_b0.1/decode_test_it1/wer_18_0.0
-%WER 4.64 [ 196 / 4228, 37 ins, 66 del, 93 sub ] exp/sgmm2_4_mmi_b0.1/decode_test_it4/wer_18_0.0
-%WER 4.64 [ 196 / 4228, 38 ins, 62 del, 96 sub ] exp/sgmm2_4_mmi_b0.1/decode_test_it3/wer_17_0.0
-%WER 4.64 [ 196 / 4228, 38 ins, 67 del, 91 sub ] exp/sgmm2_4_mmi_b0.1/decode_test_it2/wer_19_0.0
-%WER 5.65 [ 239 / 4228, 28 ins, 96 del, 115 sub ] exp/tri4_nnet/decode_test/wer_18_0.0
-%WER 6.17 [ 261 / 4228, 50 ins, 91 del, 120 sub ] exp/tri3/decode_test/wer_31_0.0
-%WER 8.07 [ 341 / 4228, 53 ins, 125 del, 163 sub ] exp/tri2/decode_test/wer_21_0.0
-%WER 8.51 [ 360 / 4228, 49 ins, 148 del, 163 sub ] exp/tri1/decode_test/wer_25_0.0
-%WER 9.11 [ 385 / 4228, 61 ins, 131 del, 193 sub ] exp/tri3/decode_test.si/wer_23_0.0
-%WER 12.23 [ 517 / 4228, 37 ins, 212 del, 268 sub ] exp/mono/decode_test/wer_20_0.0`
+%WER 4.73 [ 200 / 4228, 46 ins, 61 del, 93 sub ] exp/sgmm2_4_mmi_b0.1/decode_test_it1/wer_17_0.0
+%WER 4.78 [ 202 / 4228, 45 ins, 68 del, 89 sub ] exp/sgmm2_4/decode_test/wer_17_0.0
+%WER 4.85 [ 205 / 4228, 44 ins, 69 del, 92 sub ] exp/sgmm2_4_mmi_b0.1/decode_test_it3/wer_21_0.0
+%WER 4.85 [ 205 / 4228, 46 ins, 64 del, 95 sub ] exp/sgmm2_4_mmi_b0.1/decode_test_it4/wer_18_0.0
+%WER 4.90 [ 207 / 4228, 46 ins, 62 del, 99 sub ] exp/sgmm2_4_mmi_b0.1/decode_test_it2/wer_17_0.0
+%WER 5.65 [ 239 / 4228, 22 ins, 111 del, 106 sub ] exp/tri4_nnet/decode_test/wer_20_0.0
+%WER 5.82 [ 246 / 4228, 52 ins, 84 del, 110 sub ] exp/tri3/decode_test/wer_26_0.0
+%WER 7.66 [ 324 / 4228, 47 ins, 127 del, 150 sub ] exp/tri2/decode_test/wer_21_0.0
+%WER 8.40 [ 355 / 4228, 42 ins, 147 del, 166 sub ] exp/tri1/decode_test/wer_24_0.0
+%WER 8.96 [ 379 / 4228, 64 ins, 132 del, 183 sub ] exp/tri3/decode_test.si/wer_25_0.0
+%WER 9.01 [ 381 / 4228, 126 ins, 60 del, 195 sub ] exp/dnn4_pretrain-dbn_dnn_smbr/decode_test_it6/wer_15_0.0
+%WER 10.55 [ 446 / 4228, 155 ins, 69 del, 222 sub ] exp/dnn4_pretrain-dbn_dnn_smbr/decode_test_it1/wer_14_0.5
+%WER 10.97 [ 464 / 4228, 173 ins, 63 del, 228 sub ] exp/dnn4_pretrain-dbn_dnn/decode_test/wer_14_0.0
+%WER 12.04 [ 509 / 4228, 46 ins, 191 del, 272 sub ] exp/mono/decode_test/wer_16_0.0
 ```
 
 

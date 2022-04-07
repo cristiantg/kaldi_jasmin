@@ -17,6 +17,11 @@
 #    the objective is to emphasize state-sequences with better 
 #    frame accuracy w.r.t. reference alignment.
 
+if [[ $# -ne 4 ]]; then
+    echo "Please set 4 parameters: feats_nj decode_nj gmmdir data_fmllr"
+    exit 2
+fi
+
 . ./cmd.sh ## You'll want to change cmd.sh to something that will work on your system.
            ## This relates to the queue.
 
@@ -25,10 +30,11 @@
 # Config:
 hiddim=1024 
 rbmiter=5 #20 TIMIT default
-feats_nj=10
-decode_nj=10 #must be as max. the number of speakers
-gmmdir=exp/tri3
-data_fmllr=data-fmllr-tri3
+feats_nj=$1 #feats_nj=10
+decode_nj=$2
+# decode_nj=10 #must be as max. the number of speakers
+gmmdir=$3 #gmmdir=exp/tri3
+data_fmllr=$4 #data_fmllr=data-fmllr-tri3
 stage=0 # resume training with --stage=N
 # End of config.
 . utils/parse_options.sh || exit 1;
@@ -40,6 +46,8 @@ if [ $stage -le 0 ]; then
   # Store fMLLR features, so we can train on them easily,
   # test
   dir=$data_fmllr/test
+  rm -rf $dir
+	[ ! -d $dir ] && mkdir -p $dir
   steps/nnet/make_fmllr_feats.sh --nj $feats_nj --cmd "$train_cmd" \
      --transform-dir $gmmdir/decode_test \
      $dir data/test $gmmdir $dir/log $dir/data || exit 1

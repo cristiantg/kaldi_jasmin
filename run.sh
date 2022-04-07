@@ -252,6 +252,7 @@ arpa_train=$lm_dir/arpatrain.gz
 arpa_test=$lmtest_dir/arpatest.gz
 mfccdir=data/train/mfcc
 mfcctestdir=data/test/mfcc
+data_fmllr=data-fmllr-tri3
 ###############################################
 ###############################################
 
@@ -288,16 +289,16 @@ if [ $stage -le 0 ]; then
 		echo ============================================================================
 		echo $(date)
 		if $dotrain; then
-			# Removing previously created data
+			echo "TRAIN: Removing previously created data"
 			rm -rf exp/ $mfccdir data/local/train/cmvn.scp data/local/train/feats.scp data/local/train/split* \
 			"$data_local_lang" "$lm_dir" "$data_lang" $dict_dir/lexiconp.txt data/train
 		fi
 		if $dodecode; then
+			echo "TEST: Removing previously created data"
 			rm -rf $mfcctestdir data/local/test/cmvn.scp data/local/test/feats.scp data/local/test/split* \
 			"$data_local_langtest" "$lmtest_dir"  "$data_langtest" $dicttest_dir/lexiconp.txt data/test
 		fi
 fi
-
 
 
 if [ $stage -le 1 ]; then
@@ -359,6 +360,8 @@ if [ $stage -le 2 ]; then
 fi
 
 
+echo
+echo "train_cmd: $train_cmd"
 echo
 echo "---- Decode beam parameters ---"
 echo $(date)
@@ -617,7 +620,7 @@ fi
 
 if [ $stage -le 10 ]; then
 	echo ============================================================================
-	echo "                   10. DNN Hybrid Training & Decoding                     "
+	echo "               10. nnet2 DNN Hybrid Training & Decoding                   "
 	echo ============================================================================
 	echo $(date)
 
@@ -682,22 +685,27 @@ fi
 # 	done
 # fi
 
-echo "train_cmd: $train_cmd"
+if $doDNN; then
+	echo ============================================================================
+	echo "            12. nnet DNN Hybrid Training & Decoding (Karel's recipe)      "
+	echo ============================================================================
+	echo $(date)
+	utils/fix_data_dir.sh data/train
+	
+	rm -rf $data_fmllr
+	[ ! -d $data_fmllr ] && mkdir -p $data_fmllr
+
+	local/nnet/run_dnn.sh $feats_nj $decode_nj exp/tri3 $data_fmllr
+fi
+
+
 echo "======== Finished ========"
 echo $(date)
 
-if $doDNN; then
-	echo ============================================================================
-	echo "               DNN Hybrid Training & Decoding (Karel's recipe)            "
-	echo ============================================================================
-	utils/fix_data_dir.sh data/train
-	local/nnet/run_dnn.sh
-fi
-
 if $dodecode; then
 	for x in exp/*/decode*; do [ -d $x ] && grep WER $x/wer_* | utils/best_wer.sh; done | sort -n > exp/best_wer.txt
-	echo "======== Copying conf/ data/ exp/ nohup.out to $1 ========" #$mfccdir $mfcctestdir
-	cp -r conf/ data/ exp/ nohup.out $1 #$mfccdir $mfcctestdir
+	echo "======== Copying conf/ data/ exp/ $data_fmllr nohup.out to $1 ========" #$mfccdir $mfcctestdir
+	cp -r conf/ data/ exp/ $data_fmllr nohup.out $1 #$mfccdir $mfcctestdir
 	echo "= done"
 fi
 
