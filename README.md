@@ -41,7 +41,7 @@ lm
 # Change values of # 0-Step1, 0-Step2 and 0-Step3
 vi run.sh
 my_run=_runs2022/run1
-nohup time ./run.sh CLAM-USERNAME CLAM-PASSWORD &
+nohup time ./run.sh $my_run CLAM-USERNAME CLAM-PASSWORD &
 
 # Check the log file in real-time:
 tail -f nohup.out

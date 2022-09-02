@@ -23,8 +23,9 @@ ln -sf $KALDI_ROOT/egs/wsj/s5/steps/ steps
 ###############################################
 # 0-Step1 COMMON-PARAMETERS
 # Make sure this path is correct:
+sdir=$KALDI_ROOT/tools/srilm/bin/i686-m64
 root_project=$KALDI_ROOT/egs/kaldi_jasmin
-dodataselprep=true
+dodataselprep=true # if false, you need 4xfolders in data/local: dict, dict_test, train, test
 dotrain=true
 dodecode=true
 stage=0
@@ -320,7 +321,6 @@ if [ $stage -le 2 ]; then
 	echo ============================================================================
 	echo $(date)
 
-	sdir=$KALDI_ROOT/tools/SRILM/bin/i686-m64
 	export PATH=$PATH:$sdir   || exit 1
 	if $dotrain; then
 		mkdir -p $lm_dir
@@ -367,6 +367,7 @@ echo "---- Decode beam parameters ---"
 echo $(date)
 echo `cat conf/decode.config`
 echo `cat conf/decode_dnn.config`
+
 
 
 if [ $stage -le 3 ]; then
@@ -705,7 +706,10 @@ echo $(date)
 if $dodecode; then
 	for x in exp/*/decode*; do [ -d $x ] && grep WER $x/wer_* | utils/best_wer.sh; done | sort -n > exp/best_wer.txt
 	echo "======== Copying conf/ data/ exp/ $data_fmllr nohup.out to $1 ========" #$mfccdir $mfcctestdir
-	cp -r conf/ data/ exp/ $data_fmllr nohup.out $1 #$mfccdir $mfcctestdir
+	cp -r conf/ data/ exp/ nohup.out $1 #$mfccdir $mfcctestdir
+	if $doDNN; then
+		cp -r $data_fmllr $1
+	fi
 	echo "= done"
 fi
 
