@@ -12,9 +12,10 @@ from pathlib import Path
 
 
 if (len(sys.argv) < 7):
-    print("You must add 6 arguments: PROJECT_ID; a folder name for generating the files; the root path to this project folder; the corpus_folder path; the recordings file path; the recordings file separator.")
+    print("You must add 6 arguments: PROJECT_ID (see list above); output folder; the root path to this project folder; the JASMIN ROOT path; the JASMIN recordings file path; the recordings file separator.")
     print('python3 kaldi_jasmin/data_preparation_kaldi/data_sel.py 3 kaldi_jasmin/data_preparation_kaldi/local_jasmin10 kaldi_jasmin/data_preparation_kaldi /vol/bigdata/corpora/JASMIN/ /vol/bigdata/corpora/JASMIN/CDdoc/data/meta/text/nl/recordings.txt "<TAB>"')
     '''
+    PROJECT_ID:
     0:JASMIN
     1:CITO (all)
     2:JASMIN-132
@@ -28,11 +29,12 @@ if (len(sys.argv) < 7):
     10:CITO-144
     11:CITO-17
     12:CITO-part1part2
+    13:JASMIN-P1P2P3
     '''
     sys.exit(-1)
 
 # PROJECT_ID-MODIFY THESE VALUES ACCORDINGLY
-JASMIN_IDS = {0, 2, 3, 4, 5, 6, 7, 8, 9}
+JASMIN_IDS = {0, 2, 3, 4, 5, 6, 7, 8, 9, 13}
 CITO_IDS = {1, 10, 11, 12}
 # PROJECT_ID-MODIFY THESE VALUES ACCORDINGLY
 PROJECT_ID=int(sys.argv[1])
@@ -124,6 +126,9 @@ with open(recordings,'r', encoding='utf-8') as f_in, open(selected_recordings,'w
                 f_out.write(line)                   
         elif PROJECT_ID == 9: 
             if ((w_lst[2] == 'comp-p') or (w_lst[2] == 'comp-q')) and ((w_lst[3] == '1') or (w_lst[3] == '2') or (w_lst[3] == '3')):
+                f_out.write(line)
+        elif PROJECT_ID == 13: # 3 187= comp-p	1 -71 + comp-p	2 -63 + comp-p	3 - 53
+            if (w_lst[2] == 'comp-p') and ((w_lst[3] == '1') or (w_lst[3] == '2') or (w_lst[3] == '3')):
                 f_out.write(line)                    
 inv_original_ids = {v: k for k, v in original_ids.items()}
 
